@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Xml;
 using KatanaContrib.Security.LinkedIn.Provider;
 using Microsoft.Owin;
 using Microsoft.Owin.Infrastructure;
@@ -12,6 +6,12 @@ using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Infrastructure;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Xml;
 
 namespace KatanaContrib.Security.LinkedIn
 {
