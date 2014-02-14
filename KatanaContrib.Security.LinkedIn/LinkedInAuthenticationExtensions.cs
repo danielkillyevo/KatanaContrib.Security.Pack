@@ -9,11 +9,11 @@ namespace KatanaContrib.Security.LinkedIn
         {
             if (app == null)
             {
-                throw new ArgumentNullException("app");
+                throw new ArgumentNullException("app", "app parameter is null");
             }
             if (options == null)
             {
-                throw new ArgumentNullException("options");
+                throw new ArgumentNullException("options", "options parameter is null");
             }
 
             app.Use(typeof(LinkedInAuthenticationMiddleware), app, options);
