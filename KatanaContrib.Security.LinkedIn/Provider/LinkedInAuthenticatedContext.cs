@@ -13,6 +13,10 @@ namespace KatanaContrib.Security.LinkedIn.Provider
         public LinkedInAuthenticatedContext(IOwinContext context, JObject user, string accessToken, string expires)
             : base(context)
         {
+            if( user == null)
+            {
+                throw new ArgumentNullException("user", "user is null");
+            }
             User = user;
             AccessToken = accessToken;         
 
