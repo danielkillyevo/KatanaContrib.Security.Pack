@@ -14,7 +14,7 @@ namespace KatanaContrib.Security.LinkedIn.Tests
     public class LinkedInAuthenticatedContextTests
     {
         [TestMethod]
-        public void LinkedInAuthenticatedContext_WhenUserParameterIsNull_ThrowArgumentNullException()
+        public void LinkedInAuthenticatedContext_WhenUserParameterIsNull_ShouldThrowArgumentNullException()
         {
             IOwinContext context = CreateStubOwinContext();
             string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
@@ -29,7 +29,54 @@ namespace KatanaContrib.Security.LinkedIn.Tests
             catch(ArgumentNullException e)
             {
                 StringAssert.Contains(e.Message, "user is null");
+                return;
             }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        public void LinkedInAuthenticatedContext_WhenAccessTokenParameterIsNull_ShouldThrowArgumentNullException()
+        {
+            IOwinContext context = CreateStubOwinContext();
+            string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
+            JObject user = JObject.Parse(userInfo);
+            string accessToken = null;
+            string expires = "3600";
+
+            try
+            {
+                LinkedInAuthenticatedContext linkedinContext = new LinkedInAuthenticatedContext(context, user, accessToken, expires);
+            }
+            catch (ArgumentNullException e)
+            {
+                StringAssert.Contains(e.Message, "access token is null");
+                return;
+            }
+
+            Assert.Fail("No exception was thrown");
+        }
+
+        [TestMethod]
+        public void LinkedInAuthenticatedContext_WhenContextParameterIsNull_ShouldThrowArgumentNullException()
+        {
+            IOwinContext context = null;
+            string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
+            JObject user = JObject.Parse(userInfo);
+            string accessToken = "2975638759247325yugfysh8274585";
+            string expires = "3600";
+
+            try
+            {
+                LinkedInAuthenticatedContext linkedinContext = new LinkedInAuthenticatedContext(context, user, accessToken, expires);
+            }
+            catch (ArgumentNullException e)
+            {
+                StringAssert.Contains(e.Message, "context is null");
+                return;
+            }
+
+            Assert.Fail("No exception was thrown");
         }
 
         private static IOwinContext CreateStubOwinContext()
