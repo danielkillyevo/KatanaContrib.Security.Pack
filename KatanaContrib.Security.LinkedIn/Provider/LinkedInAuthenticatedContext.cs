@@ -28,6 +28,11 @@ namespace KatanaContrib.Security.LinkedIn.Provider
                 throw new ArgumentNullException("context", "context is null");
             }
 
+            if (expires == null)
+            {
+                throw new ArgumentNullException("expires", "expires parameter is null");
+            }
+
             User = user;
             AccessToken = accessToken;         
 
@@ -36,6 +41,10 @@ namespace KatanaContrib.Security.LinkedIn.Provider
             {
                 ExpiresIn = TimeSpan.FromSeconds(expiresValue);
             }
+            else
+            {
+                throw new ArgumentOutOfRangeException("expires", "expires value should be a number");
+            }
 
             FirstName = TryGetValue(user, "first-name");
             LastName = TryGetValue(user, "last-name");
@@ -43,7 +52,6 @@ namespace KatanaContrib.Security.LinkedIn.Provider
             Id = TryGetValue(user, "id");
             Url = TryGetValue(user, "public-profile-url");
             Email = TryGetValue(user, "email-address");
-
         }
 
         public JObject User { get; private set; }
