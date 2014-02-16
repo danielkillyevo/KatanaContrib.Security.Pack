@@ -14,3 +14,7 @@ Contribution
  - If you implemented a Katana middleware or module add you feel it should be added to KatanaContrib ping me here [@dkillewo](https://twitter.com/dkillewo)
 
 Got questions or suggestions? Feel free to create and issue or contact [@KatanaContrib](https://twitter.com/katanacontrib) / [@dkillewo](https://twitter.com/dkillewo) on twitter.
+
+
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/KatanaContrib/katanacontrib.security.pack/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
+
