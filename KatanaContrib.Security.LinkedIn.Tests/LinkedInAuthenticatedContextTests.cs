@@ -19,7 +19,7 @@ namespace KatanaContrib.Security.LinkedIn.Tests
         [TestMethod]
         public void LinkedInAuthenticatedContext_WhenUserParameterIsNull_ShouldThrowArgumentNullException()
         {
-            IOwinContext context = CreateStubOwinContext();
+            IOwinContext context = MockFactory.CreateStubOwinContext();
             JObject user = null;
             string accessToken = "2975638759247325yugfysh8274585";
             string expires = "3600";
@@ -43,7 +43,7 @@ namespace KatanaContrib.Security.LinkedIn.Tests
         [TestMethod]
         public void LinkedInAuthenticatedContext_WhenAccessTokenParameterIsNull_ShouldThrowArgumentNullException()
         {
-            IOwinContext context = CreateStubOwinContext();
+            IOwinContext context = MockFactory.CreateStubOwinContext();
             string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
             JObject user = JObject.Parse(userInfo);
             string accessToken = null;
@@ -93,7 +93,7 @@ namespace KatanaContrib.Security.LinkedIn.Tests
         [TestMethod]
         public void LinkedInAuthenticatedContext_WhenExpiresParameterIsNull_ShouldThrowArgumentNullException()
         {
-            IOwinContext context = CreateStubOwinContext();
+            IOwinContext context = MockFactory.CreateStubOwinContext();
             string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
             JObject user = JObject.Parse(userInfo);
             string accessToken = "7654hjgsgf384hjgfvfdsk3847bhfjvh3485634";
@@ -118,7 +118,7 @@ namespace KatanaContrib.Security.LinkedIn.Tests
         [TestMethod]
         public void LinkedInAuthenticatedContext_WhenExpiresParameterIsNotaNumber_ShouldThrowArgumentOutOfRangeException()
         {
-            IOwinContext context = CreateStubOwinContext();
+            IOwinContext context = MockFactory.CreateStubOwinContext();
             string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
             JObject user = JObject.Parse(userInfo);
             string accessToken = "7654hjgsgf384hjgfvfdsk3847bhfjvh3485634";
@@ -137,21 +137,56 @@ namespace KatanaContrib.Security.LinkedIn.Tests
             Assert.Fail("No exception was thrown");
         }
 
-        private static IOwinContext CreateStubOwinContext()
+        /// <summary>
+        /// A test to verify when the parameter 'user' doesn't have 'Id' in it, an exception of type ArgumentOutOfRange should be thrown.
+        /// </summary>
+        [TestMethod]
+        public void LinkedInAuthenticatedContext_WhenUserParameterDoesNotHaveId_ShouldThrowArgumentOutOfRangeException()
         {
-            return CreateOwinContextMock().Object;
+            IOwinContext context = MockFactory.CreateStubOwinContext();
+            string userInfo = "{\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\",\"formatted-name\":\"Nirosha Gihan\"}";
+            JObject user = JObject.Parse(userInfo);
+            string accessToken = "7654hjgsgf384hjgfvfdsk3847bhfjvh3485634";
+            string expires = "3600";
+
+            try
+            {
+                LinkedInAuthenticatedContext linkedInContext = new LinkedInAuthenticatedContext(context, user, accessToken, expires);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                StringAssert.Contains(e.Message, "user doesn't have id");
+                return;
+            }
+
+            Assert.Fail("No exception was thrown");
         }
 
-        private static Mock<IOwinContext> CreateOwinContextMock()
+        /// <summary>
+        /// A test to verify when the parameter 'user' doesn't have 'Username' in it, an exception of type ArgumentOutOfRange should be thrown.
+        /// </summary>
+        [TestMethod]
+        public void LinkedInAuthenticatedContext_WhenUserParameterDoesNotHaveUserName_ShouldThrowArgumentOutOfRangeException()
         {
-            Mock<IOwinContext> mock = new Mock<IOwinContext>(MockBehavior.Strict);
-            mock.Setup(c => c.Request).Returns(CreateDummyOwinRequest());
-            return mock;
+            IOwinContext context = MockFactory.CreateStubOwinContext();
+            string userInfo = "{\"id\":\"3lwM3bUvfJ\",\"first-name\":\"Nirosha\",\"last-name\":\"Gihan\"}";
+            JObject user = JObject.Parse(userInfo);
+            string accessToken = "7654hjgsgf384hjgfvfdsk3847bhfjvh3485634";
+            string expires = "3600";
+
+            try
+            {
+                LinkedInAuthenticatedContext linkedInContext = new LinkedInAuthenticatedContext(context, user, accessToken, expires);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                StringAssert.Contains(e.Message, "user doesn't have username");
+                return;
+            }
+
+            Assert.Fail("No exception was thrown");
         }
 
-        private static IOwinRequest CreateDummyOwinRequest()
-        {
-            return new Mock<IOwinRequest>(MockBehavior.Strict).Object;
-        }
+        
     }
 }

@@ -10,48 +10,21 @@ namespace KatanaContrib.Security.LinkedIn.Provider
 {
     public class LinkedInAuthenticatedContext : BaseContext
     {
+        private int _expiresValue;
+
         public LinkedInAuthenticatedContext(IOwinContext context, JObject user, string accessToken, string expires)
             : base(context)
         {
-            if(user == null)
-            {
-                throw new ArgumentNullException("user", "user is null");
-            }
-
-            if(accessToken == null)
-            {
-                throw new ArgumentNullException("accessToken", "access token is null");
-            }
-
-            if(context == null)
-            {
-                throw new ArgumentNullException("context", "context is null");
-            }
-
-            if (expires == null)
-            {
-                throw new ArgumentNullException("expires", "expires parameter is null");
-            }
-
+            this.ValidateParams(context, user, accessToken, expires);
             User = user;
-            AccessToken = accessToken;         
-
-            int expiresValue;
-            if (Int32.TryParse(expires, NumberStyles.Integer, CultureInfo.InvariantCulture, out expiresValue))
-            {
-                ExpiresIn = TimeSpan.FromSeconds(expiresValue);
-            }
-            else
-            {
-                throw new ArgumentOutOfRangeException("expires", "expires value should be a number");
-            }
-
+            AccessToken = accessToken;                      
             FirstName = TryGetValue(user, "first-name");
             LastName = TryGetValue(user, "last-name");
             UserName = TryGetValue(user, "formatted-name");
-            Id = TryGetValue(user, "id");
+            Id = TryGetValue(user, "id");         
             Url = TryGetValue(user, "public-profile-url");
             Email = TryGetValue(user, "email-address");
+            this.ValidateUser();
         }
 
         public JObject User { get; private set; }
@@ -69,6 +42,45 @@ namespace KatanaContrib.Security.LinkedIn.Provider
         {
             JToken value;
             return user.TryGetValue(propertyName, out value) ? value.ToString() : null;
+        }
+
+        private void ValidateParams(IOwinContext context, JObject user, string accessToken, string expires)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException("user", "user is null");
+            }
+            if (accessToken == null)
+            {
+                throw new ArgumentNullException("accessToken", "access token is null");
+            }
+            if (context == null)
+            {
+                throw new ArgumentNullException("context", "context is null");
+            }
+            if (expires == null)
+            {
+                throw new ArgumentNullException("expires", "expires parameter is null");
+            }
+            if (Int32.TryParse(expires, NumberStyles.Integer, CultureInfo.InvariantCulture, out _expiresValue))
+            {
+                ExpiresIn = TimeSpan.FromSeconds(_expiresValue);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException("expires", "expires value should be a number");
+            }
+        }
+        private void ValidateUser()
+        {
+            if (UserName == null)
+            {
+                throw new ArgumentOutOfRangeException("user", "user doesn't have username");
+            }
+            if (Id == null)
+            {
+                throw new ArgumentOutOfRangeException("user", "user doesn't have id");
+            }
         }
     }
 }
