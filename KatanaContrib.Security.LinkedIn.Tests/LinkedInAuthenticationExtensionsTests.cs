@@ -9,14 +9,20 @@ namespace KatanaContrib.Security.LinkedIn.Tests
     public class LinkedInAuthenticationExtensionsTests
     {
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void UseLinkedInAuthentication_WhenAppArgumentIsNull_ShouldThrowArgumentNull()
+        public void UseLinkedInAuthentication_WhenAppParameterIsNull_ShouldThrowArgumentNull()
         {
             var options = new LinkedInAuthenticationOptions();
             IAppBuilder app = null;
 
-            LinkedInAuthenticationExtensions.UseLinkedInAuthentication(app, options);
+            try
+            {
+                LinkedInAuthenticationExtensions.UseLinkedInAuthentication(app, options);
+            }
+            catch(ArgumentNullException e)
+            {
+                StringAssert.Contains(e.Message, "app parameter is null");
+            }
+            
         }
-
     }
 }
