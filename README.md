@@ -333,7 +333,3 @@ Got questions or suggestions? Feel free to create and issue or contact [@KatanaC
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/KatanaContrib/katanacontrib.security.pack/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
 
-
-
-[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/KatanaContrib/katanacontrib.security.pack/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
