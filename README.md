@@ -304,20 +304,84 @@ public void ConfigureAuth(IAppBuilder app)
 }
 ```
 
- - If you need to pass more params application scope for instance pass a `StackExchangeAuthenticationOptions` object as param:
+####08. Vkontakte####
+
+KatanaContrib.Security.VK will be included in the KatanaContrib.Security.Pack. It provides a Katana middleware that supports the Vkontakte (http://vk.com/) authentication flow. The **KatanaContrib.Security.VK** was designed and implemented similar to **Microsoft.Owin.Security.Facebook** and **Microsoft.Owin.Security.Twitter**. This allows you to use it the same way as the security middlewares provided by Microsoft. 
+
+If you intend to use Vkontakte authentication provider only without installing the full pack, you can just install **KatanaContrib.Security.VK** by running the following command in the Package Manager Console in Visual Studio.
+`Install-Package KatanaContrib.Security.VK`
+
+A couple of actions will need to be done under the **App_Start** folder in the **Startup.Auth.cs** file :
+
+ - Add namespace `using KatanaContrib.Security.VK;`
+ - In the `ConfigureAuth` call the corresponding *apps* extention method and pass your params:
+
 ```csharp
 public void ConfigureAuth(IAppBuilder app)
 {
         //... custom code ..
 
-        app.UseStackExchangeAuthentication(new StackExchangeAuthenticationOptions()
-        {
-                AppId = "YOUR_APP_API_KEY",
-                AppSecret = "YOUR_APP_SECRET_KEY",
-                CallbackPath = new PathString("/Your-StackExchange-Callback-Endpoint"),
-                Caption = "My StackExchange",
-        });
+		app.UseVkontakteAuthentication(new VkAuthenticationOptions
+		{
+			ClientId = "YOUR_CLIENT_ID",
+			ClientSecret = "YOUR_CLIENT_SECRET"
+		});
 
+        //... custom code ...
+}
+```
+
+####09. Odnoklassniki####
+
+KatanaContrib.Security.Odnoklassniki will be included in the KatanaContrib.Security.Pack. It provides a Katana middleware that supports the Odnoklassniki (http://ok.ru/) authentication flow. The **KatanaContrib.Security.Odnoklassniki** was designed and implemented similar to **Microsoft.Owin.Security.Facebook** and **Microsoft.Owin.Security.Twitter**. This allows you to use it the same way as the security middlewares provided by Microsoft. 
+
+If you intend to use Odnoklassniki authentication provider only without installing the full pack, you can just install **KatanaContrib.Security.Odnoklassniki** by running the following command in the Package Manager Console in Visual Studio.
+`Install-Package KatanaContrib.Security.Odnoklassniki`
+
+A couple of actions will need to be done under the **App_Start** folder in the **Startup.Auth.cs** file :
+
+ - Add namespace `using KatanaContrib.Security.Odnoklassniki;`
+ - In the `ConfigureAuth` call the corresponding *apps* extention method and pass your params:
+
+```csharp
+public void ConfigureAuth(IAppBuilder app)
+{
+        //... custom code ..
+
+		app.UseOdnoklassnikiAuthentication(new OdnoklassnikiAuthenticationOptions
+		{
+			ClientId = "YOUR_CLIENT_ID",
+			ClientSecret = "YOUR_CLIENT_SECRET",
+			ClientPublic = "YOUR_CLIENT_PUBLIC"
+		});
+
+        //... custom code ...
+}
+```
+
+####10. My Mail####
+
+KatanaContrib.Security.MyMail will be included in the KatanaContrib.Security.Pack. It provides a Katana middleware that supports the MyMail (http://my.mail.ru/) authentication flow. The **KatanaContrib.Security.MyMail** was designed and implemented similar to **Microsoft.Owin.Security.Facebook** and **Microsoft.Owin.Security.Twitter**. This allows you to use it the same way as the security middlewares provided by Microsoft. 
+
+If you intend to use MyMail authentication provider only without installing the full pack, you can just install **KatanaContrib.Security.MyMail** by running the following command in the Package Manager Console in Visual Studio.
+`Install-Package KatanaContrib.Security.MyMail`
+
+A couple of actions will need to be done under the **App_Start** folder in the **Startup.Auth.cs** file :
+
+ - Add namespace `using KatanaContrib.Security.MyMail;`
+ - In the `ConfigureAuth` call the corresponding *apps* extention method and pass your params:
+
+```csharp
+public void ConfigureAuth(IAppBuilder app)
+{
+        //... custom code ..
+
+		app.UseMyMailAuthentication(new MyMailAuthenticationOptions
+		{
+			ClientId = "YOUR_CLIENT_ID",
+			ClientSecret = "YOUR_CLIENT_SECRET",
+			PrivateKey = "YOU_PRIVATE_KEY",
+		});
 
         //... custom code ...
 }
