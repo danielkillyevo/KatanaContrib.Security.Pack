@@ -4,23 +4,21 @@ using System.Net.Http;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 
-namespace KatanaContrib.Security.Odnoklassniki
+namespace KatanaContrib.Security.MyMail
 {
-    public class OdnoklassnikiAuthenticationOptions : AuthenticationOptions
+    public class MyMailAuthenticationOptions : AuthenticationOptions
     {
-        public OdnoklassnikiAuthenticationOptions()
+        public MyMailAuthenticationOptions()
             : base(Constants.DefaultAuthenticationType)
         {
             Caption = Constants.DefaultAuthenticationType;
-            CallbackPath = new PathString("/signin-odnoklassniki");
+            CallbackPath = new PathString("/signin-mymail");
             AuthenticationMode = AuthenticationMode.Passive;
             Scope = new List<string>();
-            Version = "5.3";
             BackchannelTimeout = TimeSpan.FromSeconds(60);
         }
 
         public string ClientId { get; set; }
-        public string ClientPublic { get; set; }
         public string ClientSecret { get; set; }
         public ICertificateValidator BackchannelCertificateValidator { get; set; }
         public TimeSpan BackchannelTimeout { get; set; }
@@ -34,10 +32,10 @@ namespace KatanaContrib.Security.Odnoklassniki
 
         public PathString CallbackPath { get; set; }
         public string SignInAsAuthenticationType { get; set; }
-        public IOdnoklassnikiAuthenticationProvider Provider { get; set; }
+        public IMyMailAuthenticationProvider Provider { get; set; }
         public ISecureDataFormat<AuthenticationProperties> StateDataFormat { get; set; }
         public string StoreState { get; set; }
         public IList<string> Scope { get; set; }
-        public string Version { get; set; }
+        public string PrivateKey { get; set; }
     }
 }

@@ -2,11 +2,11 @@ using System;
 using System.Collections.Generic;
 using Owin;
 
-namespace KatanaContrib.Security.VK
+namespace KatanaContrib.Security.MyMail
 {
-    public static class VkAuthenticationExtensions
+    public static class MyMailAuthenticationExtensions
     {
-        public static IAppBuilder UseVkontakteAuthentication(this IAppBuilder app, VkAuthenticationOptions options)
+        public static IAppBuilder UseMyMailAuthentication(this IAppBuilder app, MyMailAuthenticationOptions options)
         {
             if (app == null)
             {
@@ -17,33 +17,33 @@ namespace KatanaContrib.Security.VK
                 throw new ArgumentNullException("options");
             }
 
-            app.Use(typeof (VkAuthenticationMiddleware), app, options);
+            app.Use(typeof (MyMailAuthenticationMiddleware), app, options);
             return app;
         }
 
-        public static IAppBuilder UseVkontakteAuthentication(
+        public static IAppBuilder UseMyMailAuthentication(
             this IAppBuilder app,
             string clientId,
             string clientSecret)
         {
-            return UseVkontakteAuthentication(
+            return UseMyMailAuthentication(
                 app,
-                new VkAuthenticationOptions
+                new MyMailAuthenticationOptions
                 {
                     ClientId = clientId,
                     ClientSecret = clientSecret
                 });
         }
 
-        public static IAppBuilder UseVkontakteAuthentication(
+        public static IAppBuilder UseMyMailAuthentication(
             this IAppBuilder app,
             string clientId,
             string clientSecret,
             IList<string> scope)
         {
-            return UseVkontakteAuthentication(
+            return UseMyMailAuthentication(
                 app,
-                new VkAuthenticationOptions
+                new MyMailAuthenticationOptions
                 {
                     ClientId = clientId,
                     ClientSecret = clientSecret,

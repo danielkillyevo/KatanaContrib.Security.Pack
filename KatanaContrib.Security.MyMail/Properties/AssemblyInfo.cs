@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[assembly: AssemblyTitle("KatanaContrib.Security.Odnoklassniki")]
+[assembly: AssemblyTitle("KatanaContrib.Security.MyMail")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("KatanaContrib.Security.Odnoklassniki")]
+[assembly: AssemblyProduct("KatanaContrib.Security.MyMail")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[assembly: Guid("a484ecf4-8357-426c-b60b-8bf52f662cae")]
+[assembly: Guid("5d987f8b-4da2-4280-a559-a8d4085413ba")]
 
 // Version information for an assembly consists of the following four values:
 //

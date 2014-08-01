@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Globalization;
 using System.Security.Claims;
-using System.Xml;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Provider;
@@ -24,7 +23,7 @@ namespace KatanaContrib.Security.Odnoklassniki
             }
 
             Id = TryGetValue("uid");
-            Name = TryGetValue("first_name");
+            FirstName = TryGetValue("first_name");
             LastName = TryGetValue("last_name");
             UserName = TryGetValue("name");
             Link = TryGetValue("pic_1");
@@ -34,15 +33,14 @@ namespace KatanaContrib.Security.Odnoklassniki
         public string AccessToken { get; private set; }
         public TimeSpan? ExpiresIn { get; set; }
         public string Id { get; private set; }
-        public string Name { get; private set; }
+        public string FirstName { get; private set; }
         public string LastName { get; private set; }
+
         public string FullName
         {
-            get
-            {
-                return Name + " " + LastName;
-            }
+            get { return FirstName + " " + LastName; }
         }
+
         public string DefaultName
         {
             get
@@ -53,6 +51,7 @@ namespace KatanaContrib.Security.Odnoklassniki
                 return FullName;
             }
         }
+
         public string Link { get; private set; }
         public string UserName { get; private set; }
         public ClaimsIdentity Identity { get; set; }

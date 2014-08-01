@@ -1,12 +1,12 @@
 using System;
 using Owin;
-using System.Collections.Generic;
 
 namespace KatanaContrib.Security.Odnoklassniki
 {
     public static class OdnoklassnikiAuthenticationExtensions
     {
-        public static IAppBuilder UseOdnoklassnikiAuthentication(this IAppBuilder app, OdnoklassnikiAuthenticationOptions options)
+        public static IAppBuilder UseOdnoklassnikiAuthentication(this IAppBuilder app,
+            OdnoklassnikiAuthenticationOptions options)
         {
             if (app == null)
             {
@@ -17,7 +17,7 @@ namespace KatanaContrib.Security.Odnoklassniki
                 throw new ArgumentNullException("options");
             }
 
-            app.Use(typeof(OdnoklassnikiAuthenticationMiddleware), app, options);
+            app.Use(typeof (OdnoklassnikiAuthenticationMiddleware), app, options);
             return app;
         }
 

@@ -28,7 +28,6 @@ namespace KatanaContrib.Security.VK
             UserName = TryGetValue("screen_name");
             Nickname = TryGetValue("nickname");
             Link = TryGetValue("photo_50");
-
         }
 
         public XmlDocument UserXml { get; private set; }
@@ -37,13 +36,12 @@ namespace KatanaContrib.Security.VK
         public string Id { get; private set; }
         public string Name { get; private set; }
         public string LastName { get; private set; }
+
         public string FullName
         {
-            get
-            {
-                return Name + " " + LastName;
-            }
+            get { return Name + " " + LastName; }
         }
+
         public string DefaultName
         {
             get
@@ -57,6 +55,7 @@ namespace KatanaContrib.Security.VK
                 return FullName;
             }
         }
+
         public string Link { get; private set; }
         public string UserName { get; private set; }
         public string Nickname { get; private set; }

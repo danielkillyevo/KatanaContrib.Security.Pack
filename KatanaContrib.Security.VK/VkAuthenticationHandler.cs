@@ -19,8 +19,8 @@ namespace KatanaContrib.Security.VK
         private const string TokenEndpoint = "https://oauth.vk.com/access_token";
         private const string GraphApiEndpoint = "https://api.vk.com/method/";
 
+        private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
-        private readonly HttpClient _httpClient;        
 
         public VkAuthenticationHandler(HttpClient httpClient, ILogger logger)
         {
@@ -42,7 +42,8 @@ namespace KatanaContrib.Security.VK
             }
 
             //Helper checking if that module called for login
-            AuthenticationResponseChallenge challenge = Helper.LookupChallenge(Options.AuthenticationType, Options.AuthenticationMode);
+            AuthenticationResponseChallenge challenge = Helper.LookupChallenge(Options.AuthenticationType,
+                Options.AuthenticationMode);
 
             if (challenge != null)
             {
@@ -72,18 +73,18 @@ namespace KatanaContrib.Security.VK
 
                 // comma separated
                 string scope = string.Join(",", Options.Scope);
-                
+
                 string state = Options.StateDataFormat.Protect(properties);
 
                 Options.StoreState = state;
 
                 string authorizationEndpoint =
                     "https://oauth.vk.com/authorize" +
-                        "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
-                        "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
-                        "&scope=" + Uri.EscapeDataString(scope) +
-                        "&response_type=code" +
-                        "&v=" + Uri.EscapeDataString(Options.Version);
+                    "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
+                    "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
+                    "&scope=" + Uri.EscapeDataString(scope) +
+                    "&response_type=code" +
+                    "&v=" + Uri.EscapeDataString(Options.Version);
 
                 Response.Redirect(authorizationEndpoint);
             }
@@ -106,7 +107,8 @@ namespace KatanaContrib.Security.VK
         {
             if (Options.CallbackPath.HasValue && Options.CallbackPath == Request.Path)
             {
-                AuthenticationTicket ticket = await AuthenticateAsync(); //call Task<AuthenticationTicket> AuthenticateCoreAsync() step 2.3
+                AuthenticationTicket ticket = await AuthenticateAsync();
+                    //call Task<AuthenticationTicket> AuthenticateCoreAsync() step 2.3
                 if (ticket == null)
                 {
                     _logger.WriteWarning("Invalid return state, unable to redirect.");
@@ -125,9 +127,12 @@ namespace KatanaContrib.Security.VK
                     context.Identity != null)
                 {
                     ClaimsIdentity grantIdentity = context.Identity;
-                    if (!string.Equals(grantIdentity.AuthenticationType, context.SignInAsAuthenticationType, StringComparison.Ordinal))
+                    if (
+                        !string.Equals(grantIdentity.AuthenticationType, context.SignInAsAuthenticationType,
+                            StringComparison.Ordinal))
                     {
-                        grantIdentity = new ClaimsIdentity(grantIdentity.Claims, context.SignInAsAuthenticationType, grantIdentity.NameClaimType, grantIdentity.RoleClaimType);
+                        grantIdentity = new ClaimsIdentity(grantIdentity.Claims, context.SignInAsAuthenticationType,
+                            grantIdentity.NameClaimType, grantIdentity.RoleClaimType);
                     }
                     Context.Authentication.SignIn(context.Properties, grantIdentity);
                 }
@@ -193,9 +198,7 @@ namespace KatanaContrib.Security.VK
                 HttpResponseMessage tokenResponse = await _httpClient.GetAsync(tokenRequest, Request.CallCancelled);
                 tokenResponse.EnsureSuccessStatusCode();
                 string text = await tokenResponse.Content.ReadAsStringAsync();
-                //IFormCollection form = WebHelpers.ParseForm(text);
                 var JsonResponse = JsonConvert.DeserializeObject<dynamic>(text);
-                //JObject TokenResponse = JObject.Parse(text);
 
                 string accessToken = JsonResponse["access_token"];
                 string expires = JsonResponse["expires_in"];
@@ -209,7 +212,7 @@ namespace KatanaContrib.Security.VK
                 HttpResponseMessage graphResponse = await _httpClient.GetAsync(userInfoLink, Request.CallCancelled);
                 graphResponse.EnsureSuccessStatusCode();
                 text = await graphResponse.Content.ReadAsStringAsync();
-                XmlDocument UserInfoResponseXml = new XmlDocument();
+                var UserInfoResponseXml = new XmlDocument();
                 UserInfoResponseXml.LoadXml(text);
 
                 var context = new VkAuthenticatedContext(Context, UserInfoResponseXml, accessToken, expires);
@@ -218,28 +221,34 @@ namespace KatanaContrib.Security.VK
                     ClaimsIdentity.DefaultNameClaimType,
                     ClaimsIdentity.DefaultRoleClaimType);
 
+                context.Identity.AddClaim(new Claim("urn:vkontakte:accesstoken", context.AccessToken, XmlSchemaString,
+                    Options.AuthenticationType));
+
                 if (!string.IsNullOrEmpty(context.Id))
                 {
-                    context.Identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.Id, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.Id, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
                 if (!string.IsNullOrEmpty(context.DefaultName))
                 {
-                    context.Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, context.DefaultName, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, context.DefaultName,
+                        XmlSchemaString, Options.AuthenticationType));
                 }
                 if (!string.IsNullOrEmpty(context.FullName))
                 {
-                    context.Identity.AddClaim(new Claim("urn:vkontakte:name", context.FullName, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim("urn:vkontakte:name", context.FullName, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
                 if (!string.IsNullOrEmpty(context.Link))
                 {
-                    context.Identity.AddClaim(new Claim("urn:vkontakte:link", context.Link, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim("urn:vkontakte:link", context.Link, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
                 context.Properties = properties;
 
                 await Options.Provider.Authenticated(context);
 
                 return new AuthenticationTicket(context.Identity, context.Properties);
-
             }
             catch (Exception ex)
             {

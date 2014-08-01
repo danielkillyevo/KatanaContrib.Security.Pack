@@ -1,8 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
-using System.Collections.Generic;
 
 namespace KatanaContrib.Security.VK
 {
@@ -18,16 +18,19 @@ namespace KatanaContrib.Security.VK
             Version = "5.3";
             BackchannelTimeout = TimeSpan.FromSeconds(60);
         }
+
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public ICertificateValidator BackchannelCertificateValidator { get; set; }
         public TimeSpan BackchannelTimeout { get; set; }
         public HttpMessageHandler BackchannelHttpHandler { get; set; }
+
         public string Caption
         {
             get { return Description.Caption; }
             set { Description.Caption = value; }
         }
+
         public PathString CallbackPath { get; set; }
         public string SignInAsAuthenticationType { get; set; }
         public IVkAuthenticationProvider Provider { get; set; }

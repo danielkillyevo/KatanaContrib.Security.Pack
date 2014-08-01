@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KatanaContrib.Security.Meet
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KatanaContrib.Security.StackExchange", "KatanaContrib.Security.StackExchange\KatanaContrib.Security.StackExchange.csproj", "{D1C8FDCB-97A4-4A31-B295-F6D8B014B1F7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KatanaContrib.Security.MyMail", "KatanaContrib.Security.MyMail\KatanaContrib.Security.MyMail.csproj", "{62052F98-AC9C-4317-96BE-3B80E660A3A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{D1C8FDCB-97A4-4A31-B295-F6D8B014B1F7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D1C8FDCB-97A4-4A31-B295-F6D8B014B1F7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D1C8FDCB-97A4-4A31-B295-F6D8B014B1F7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{62052F98-AC9C-4317-96BE-3B80E660A3A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{62052F98-AC9C-4317-96BE-3B80E660A3A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{62052F98-AC9C-4317-96BE-3B80E660A3A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{62052F98-AC9C-4317-96BE-3B80E660A3A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
