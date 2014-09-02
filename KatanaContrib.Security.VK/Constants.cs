@@ -1,5 +1,4 @@
-﻿
-namespace KatanaContrib.Security.VK
+﻿namespace KatanaContrib.Security.VK
 {
     internal static class Constants
     {

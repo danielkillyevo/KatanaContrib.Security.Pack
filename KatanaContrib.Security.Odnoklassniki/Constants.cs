@@ -1,5 +1,4 @@
-﻿
-namespace KatanaContrib.Security.Odnoklassniki
+﻿namespace KatanaContrib.Security.Odnoklassniki
 {
     internal static class Constants
     {

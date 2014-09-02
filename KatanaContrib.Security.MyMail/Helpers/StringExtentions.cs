@@ -2,7 +2,7 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace KatanaContrib.Security.Odnoklassniki
+namespace KatanaContrib.Security.MyMail
 {
     internal static class StringExtensions
     {

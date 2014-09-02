@@ -9,15 +9,14 @@ using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.Infrastructure;
 using Owin;
 
-namespace KatanaContrib.Security.Odnoklassniki
+namespace KatanaContrib.Security.MyMail
 {
-    public class OdnoklassnikiAuthenticationMiddleware : AuthenticationMiddleware<OdnoklassnikiAuthenticationOptions>
+    public class MyMailAuthenticationMiddleware : AuthenticationMiddleware<MyMailAuthenticationOptions>
     {
         private readonly HttpClient _httpClient;
         private readonly ILogger _logger;
 
-        public OdnoklassnikiAuthenticationMiddleware(OwinMiddleware next, IAppBuilder app,
-            OdnoklassnikiAuthenticationOptions options)
+        public MyMailAuthenticationMiddleware(OwinMiddleware next, IAppBuilder app, MyMailAuthenticationOptions options)
             : base(next, options)
         {
             if (string.IsNullOrWhiteSpace(Options.ClientId))
@@ -25,28 +24,23 @@ namespace KatanaContrib.Security.Odnoklassniki
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     "The '{0}' option must be provided.", "AppId"));
             }
-            if (string.IsNullOrWhiteSpace(Options.ClientPublic))
-            {
-                throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
-                    "The '{0}' option must be provided.", "AppPublic"));
-            }
             if (string.IsNullOrWhiteSpace(Options.ClientSecret))
             {
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture,
                     "The '{0}' option must be provided.", "AppSecret"));
             }
 
-            _logger = app.CreateLogger<OdnoklassnikiAuthenticationMiddleware>();
+            _logger = app.CreateLogger<MyMailAuthenticationMiddleware>();
 
 
             if (Options.Provider == null)
             {
-                Options.Provider = new OdnoklassnikiAuthenticationProvider();
+                Options.Provider = new MyMailAuthenticationProvider();
             }
             if (Options.StateDataFormat == null)
             {
                 IDataProtector dataProtector = app.CreateDataProtector(
-                    typeof (OdnoklassnikiAuthenticationMiddleware).FullName,
+                    typeof (MyMailAuthenticationMiddleware).FullName,
                     Options.AuthenticationType, "v1");
                 Options.StateDataFormat = new PropertiesDataFormat(dataProtector);
             }
@@ -60,12 +54,12 @@ namespace KatanaContrib.Security.Odnoklassniki
             _httpClient.MaxResponseContentBufferSize = 1024*1024*10; // 10 MB
         }
 
-        protected override AuthenticationHandler<OdnoklassnikiAuthenticationOptions> CreateHandler()
+        protected override AuthenticationHandler<MyMailAuthenticationOptions> CreateHandler()
         {
-            return new OdnoklassnikiAuthenticationHandler(_httpClient, _logger);
+            return new MyMailAuthenticationHandler(_httpClient, _logger);
         }
 
-        private static HttpMessageHandler ResolveHttpMessageHandler(OdnoklassnikiAuthenticationOptions options)
+        private static HttpMessageHandler ResolveHttpMessageHandler(MyMailAuthenticationOptions options)
         {
             HttpMessageHandler handler = options.BackchannelHttpHandler ?? new WebRequestHandler();
 

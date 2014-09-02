@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Xml;
 using Microsoft.Owin;
 using Microsoft.Owin.Infrastructure;
 using Microsoft.Owin.Logging;
@@ -22,8 +21,8 @@ namespace KatanaContrib.Security.Odnoklassniki
         private const string TokenEndpoint = "http://api.odnoklassniki.ru/oauth/token.do";
         private const string UserInfoServiceEndpoint = "http://api.odnoklassniki.ru/fb.do";
 
-        private readonly ILogger _logger;
         private readonly HttpClient _httpClient;
+        private readonly ILogger _logger;
 
         public OdnoklassnikiAuthenticationHandler(HttpClient httpClient, ILogger logger)
         {
@@ -39,7 +38,8 @@ namespace KatanaContrib.Security.Odnoklassniki
             }
 
             //Helper checking if that module called for login
-            AuthenticationResponseChallenge challenge = Helper.LookupChallenge(Options.AuthenticationType, Options.AuthenticationMode);
+            AuthenticationResponseChallenge challenge = Helper.LookupChallenge(Options.AuthenticationType,
+                Options.AuthenticationMode);
 
             if (challenge != null)
             {
@@ -69,18 +69,18 @@ namespace KatanaContrib.Security.Odnoklassniki
 
                 // comma separated
                 string scope = string.Join(",", Options.Scope);
-                
+
                 string state = Options.StateDataFormat.Protect(properties);
 
                 Options.StoreState = state;
 
                 string authorizationEndpoint =
                     AuthorizationServiceEndpoint +
-                        "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
-                        "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
-                        "&scope=" + Uri.EscapeDataString(scope) +
-                        "&response_type=code" +
-                        "&v=" + Uri.EscapeDataString(Options.Version);
+                    "?client_id=" + Uri.EscapeDataString(Options.ClientId) +
+                    "&redirect_uri=" + Uri.EscapeDataString(redirectUri) +
+                    "&scope=" + Uri.EscapeDataString(scope) +
+                    "&response_type=code" +
+                    "&v=" + Uri.EscapeDataString(Options.Version);
 
                 Response.Redirect(authorizationEndpoint);
             }
@@ -105,9 +105,11 @@ namespace KatanaContrib.Security.Odnoklassniki
                     return true;
                 }
 
-                var context = new OdnoklassnikiReturnEndpointContext(Context, ticket);
-                context.SignInAsAuthenticationType = Options.SignInAsAuthenticationType;
-                context.RedirectUri = ticket.Properties.RedirectUri;
+                var context = new OdnoklassnikiReturnEndpointContext(Context, ticket)
+                {
+                    SignInAsAuthenticationType = Options.SignInAsAuthenticationType,
+                    RedirectUri = ticket.Properties.RedirectUri
+                };
 
                 await Options.Provider.ReturnEndpoint(context);
 
@@ -116,9 +118,12 @@ namespace KatanaContrib.Security.Odnoklassniki
                     context.Identity != null)
                 {
                     ClaimsIdentity grantIdentity = context.Identity;
-                    if (!string.Equals(grantIdentity.AuthenticationType, context.SignInAsAuthenticationType, StringComparison.Ordinal))
+                    if (
+                        !string.Equals(grantIdentity.AuthenticationType, context.SignInAsAuthenticationType,
+                            StringComparison.Ordinal))
                     {
-                        grantIdentity = new ClaimsIdentity(grantIdentity.Claims, context.SignInAsAuthenticationType, grantIdentity.NameClaimType, grantIdentity.RoleClaimType);
+                        grantIdentity = new ClaimsIdentity(grantIdentity.Claims, context.SignInAsAuthenticationType,
+                            grantIdentity.NameClaimType, grantIdentity.RoleClaimType);
                     }
                     Context.Authentication.SignIn(context.Properties, grantIdentity);
                 }
@@ -173,13 +178,15 @@ namespace KatanaContrib.Security.Odnoklassniki
                 string redirectUri = requestPrefix + Request.PathBase + Options.CallbackPath;
 
                 //http://api.odnoklassniki.ru/oauth/token.do
-                string tokenRequest = TokenEndpoint + "?grant_type=authorization_code&client_id=" + Uri.EscapeDataString(Options.ClientId) +
+                string tokenRequest = TokenEndpoint + "?grant_type=authorization_code&client_id=" +
+                                      Uri.EscapeDataString(Options.ClientId) +
                                       "&client_secret=" + Uri.EscapeDataString(Options.ClientSecret) +
                                       "&code=" + Uri.EscapeDataString(code) +
                                       "&redirect_uri=" + Uri.EscapeDataString(redirectUri);
 
                 // USE only POST for odnoklassniki.api
-                HttpResponseMessage tokenResponse = await _httpClient.PostAsync(tokenRequest, new HttpRequestMessage().Content, Request.CallCancelled);
+                HttpResponseMessage tokenResponse =
+                    await _httpClient.PostAsync(tokenRequest, new HttpRequestMessage().Content, Request.CallCancelled);
                 tokenResponse.EnsureSuccessStatusCode();
                 string text = await tokenResponse.Content.ReadAsStringAsync();
                 //IFormCollection form = WebHelpers.ParseForm(text);
@@ -187,7 +194,7 @@ namespace KatanaContrib.Security.Odnoklassniki
                 string accessToken = JsonResponse["access_token"];
 
                 //Set the expiration time 60 days (5183999 seconds)
-                string expires = "5183999";
+                const string expires = "5183999";
 
                 // Signing.
                 // Call API methods using access_token instead of session_key parameter
@@ -195,49 +202,67 @@ namespace KatanaContrib.Security.Odnoklassniki
                 // http://dev.odnoklassniki.ru/wiki/display/ok/Authentication+and+Authorization
                 // sig = md5( request_params_composed_string+ md5(access_token + application_secret_key)  )
                 // Don't include access_token into request_params_composed_string
-                var args = new Dictionary<string, string>();
-                args.Add("application_key", Options.ClientPublic);
-                args.Add("method", "users.getCurrentUser");
-                var signature = string.Concat(args.OrderBy(x => x.Key).Select(x => string.Format("{0}={1}", x.Key, x.Value)).ToList());
+                var args = new Dictionary<string, string>
+                {
+                    {"application_key", Options.ClientPublic},
+                    {"method", "users.getCurrentUser"}
+                };
+                string signature =
+                    string.Concat(
+                        args.OrderBy(x => x.Key).Select(x => string.Format("{0}={1}", x.Key, x.Value)).ToList());
                 signature = (signature + (accessToken + Options.ClientSecret).GetMd5Hash()).GetMd5Hash();
                 args.Add("access_token", accessToken);
                 args.Add("sig", signature);
 
-                var userInfoLink = UserInfoServiceEndpoint + "?" + string.Join("&", args.Select(x => x.Key + "=" + x.Value));
+                string userInfoLink = UserInfoServiceEndpoint + "?" +
+                                      string.Join("&", args.Select(x => x.Key + "=" + x.Value));
 
                 HttpResponseMessage graphResponse = await _httpClient.GetAsync(userInfoLink, Request.CallCancelled);
                 graphResponse.EnsureSuccessStatusCode();
                 text = await graphResponse.Content.ReadAsStringAsync();
 
-                var data = JObject.Parse(text);
-                var context = new OdnoklassnikiAuthenticatedContext(Context, data, accessToken, expires);
-                context.Identity = new ClaimsIdentity(
-                    Options.AuthenticationType,
-                    ClaimsIdentity.DefaultNameClaimType,
-                    ClaimsIdentity.DefaultRoleClaimType);
+                JObject data = JObject.Parse(text);
+                var context = new OdnoklassnikiAuthenticatedContext(Context, data, accessToken, expires)
+                {
+                    Identity = new ClaimsIdentity(
+                        Options.AuthenticationType,
+                        ClaimsIdentity.DefaultNameClaimType,
+                        ClaimsIdentity.DefaultRoleClaimType)
+                };
+
+                context.Identity.AddClaim(new Claim("urn:odnoklassniki:accesstoken", context.AccessToken,
+                    XmlSchemaString, Options.AuthenticationType));
 
                 if (!string.IsNullOrEmpty(context.Id))
                 {
-                    context.Identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.Id, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, context.Id, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
-                if (!string.IsNullOrEmpty(context.DefaultName))
+                if (!string.IsNullOrEmpty(context.FirstName))
                 {
-                    context.Identity.AddClaim(new Claim(ClaimsIdentity.DefaultNameClaimType, context.DefaultName, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.GivenName, context.FirstName,
+                        XmlSchemaString, Options.AuthenticationType));
+                }
+                if (!string.IsNullOrEmpty(context.LastName))
+                {
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Surname, context.LastName,
+                        XmlSchemaString, Options.AuthenticationType));
                 }
                 if (!string.IsNullOrEmpty(context.FullName))
                 {
-                    context.Identity.AddClaim(new Claim("urn:vkontakte:name", context.FullName, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim(ClaimTypes.Name, context.FullName, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
                 if (!string.IsNullOrEmpty(context.Link))
                 {
-                    context.Identity.AddClaim(new Claim("urn:vkontakte:link", context.Link, XmlSchemaString, Options.AuthenticationType));
+                    context.Identity.AddClaim(new Claim("urn:odnoklassniki:link", context.Link, XmlSchemaString,
+                        Options.AuthenticationType));
                 }
                 context.Properties = properties;
 
                 await Options.Provider.Authenticated(context);
 
                 return new AuthenticationTicket(context.Identity, context.Properties);
-
             }
             catch (Exception ex)
             {

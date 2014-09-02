@@ -2,11 +2,11 @@
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Provider;
 
-namespace KatanaContrib.Security.VK
+namespace KatanaContrib.Security.MyMail
 {
-    public class VkReturnEndpointContext : ReturnEndpointContext
+    public class MyMailReturnEndpointContext : ReturnEndpointContext
     {
-        public VkReturnEndpointContext(
+        public MyMailReturnEndpointContext(
             IOwinContext context,
             AuthenticationTicket ticket)
             : base(context, ticket)
