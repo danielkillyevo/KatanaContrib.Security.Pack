@@ -323,6 +323,9 @@ public void ConfigureAuth(IAppBuilder app)
 
 		app.UseVkontakteAuthentication(new VkAuthenticationOptions
 		{
+        // You should add "email" as a parameter for scope
+        // if you are willing to receive user email
+            Scope = new List<string>() { "email" },  
 			ClientId = "YOUR_CLIENT_ID",
 			ClientSecret = "YOUR_CLIENT_SECRET"
 		});
