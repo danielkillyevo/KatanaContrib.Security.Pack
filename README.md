@@ -19,6 +19,8 @@ As a solution to the above problem, we decided to implement the remaining login 
  5. [LinkedIn](http://www.nuget.org/packages/KatanaContrib.Security.LinkedIn)
  6. [Meetup](http://www.nuget.org/packages/KatanaContrib.Security.Meetup)
  7. [StackExchange](http://www.nuget.org/packages/KatanaContrib.Security.StackExchange)
+ 8. [MyMail](http://www.nuget.org/packages/KatanaContrib.Security.StackExchange) (doc to be added)
+ 9. [Odnoklassniki](http://www.nuget.org/packages/KatanaContrib.Security.StackExchange)
 
 ##Technology##
 We have used **OAUTH 1.0a** and **OAUTH 2.0** for the implementation of these login providers with **Owin Katana**. Also we used the same code patterns used in the original implementation of the Katana Login Providers developed by Microsoft Katana team.
