@@ -168,13 +168,16 @@ namespace KatanaContrib.Security.Instagram
 
                 GenerateCorrelationId(properties);
 
-                string scope = string.Join(",", Options.Scope);
+                string scope = string.Join("+", Options.Scope);
 
                 string state = Options.StateDataFormat.Protect(properties);
 
                 string authorizationUrl =
                     AuthorizationEndpoint + "?client_id=" + Options.ClientId +
                     "&redirect_uri="+ redirectUri + "&response_type=code" + "&state=" + state;
+
+                if (!string.IsNullOrEmpty(scope))
+                    authorizationUrl += "&scope=" + scope;
 
                 Response.Redirect(authorizationUrl);
             }
